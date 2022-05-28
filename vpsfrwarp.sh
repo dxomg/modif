@@ -232,6 +232,6 @@ install(){
     start_wgcf
 }
 
-check_tun
+# check_tun
 checkCentOS8
 install
