@@ -135,7 +135,7 @@ install_wgcf(){
 register_wgcf(){
     rm -f wgcf-account.toml
     until [[ -a wgcf-account.toml ]]; do
-        yellow "正在向CloudFlare WARP申请账号，如提示429 Too Many Requests错误请耐心等待即可"
+        yellow "We are applying for an account with CloudFlare WARP, please be patient if you are prompted with 429 Too Many Requests error."
         yes | wgcf register
         sleep 5
     done
@@ -143,8 +143,8 @@ register_wgcf(){
 }
 
 generate_wgcf_config(){
-    yellow "使用WARP免费版账户请按回车跳过 \n启用WARP+账户，请复制WARP+的许可证密钥(26个字符)后回车"
-    read -p "按键许可证密钥(26个字符):" WPPlusKey
+    yellow "To use the free version of WARP account, please press enter to skip \nTo enable the WARP+ account, copy the license key for WARP+ (26 characters) and enter"
+    read -p "Key License Key (26 characters):" WPPlusKey
     if [[ -n $WPPlusKey ]]; then
         sed -i "s/license_key.*/license_key = \"$WPPlusKey\"/g" wgcf-account.toml
         read -p "请输入自定义设备名，如未输入则使用默认随机设备名：" WPPlusName
@@ -192,7 +192,7 @@ get_best_mtu(){
         fi
     done
     MTU=$((${MTUy} - 80))
-    green "MTU最佳值=$MTU 已设置完毕"
+    green "MTU optimal value=$MTU is set"
     sed -i "s/MTU.*/MTU = $MTU/g" wgcf-profile.conf
 }
 
@@ -205,11 +205,11 @@ cpto_wireguard(){
 }
 
 start_wgcf(){
-    yellow "正在启动 Wgcf-WARP"
+    yellow "Wgcf-WARP is starting"
     wg-quick up wgcf >/dev/null 2>&1
     WgcfWARPStatus=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
     until [[ $WgcfWARPStatus =~ on|plus ]]; do
-        red "无法启动Wgcf-WARP，正在尝试重启"
+        red "Unable to start Wgcf-WARP, trying to reboot"
         wg-quick down wgcf >/dev/null 2>&1
         wg-quick up wgcf >/dev/null 2>&1
         WgcfWARPStatus=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace -k | grep warp | cut -d= -f2)
@@ -217,8 +217,8 @@ start_wgcf(){
     done
     systemctl enable wg-quick@wgcf >/dev/null 2>&1
     WgcfIPv4=$(curl -s4m8 https://ip.gs -k)
-    green "Wgcf-WARP 已启动成功"
-    yellow "Wgcf-WARP的IPv4 IP为：$WgcfIPv4"
+    green "Wgcf-WARP has been started successfully"
+    yellow "The IPv4 IP of Wgcf-WARP is：$WgcfIPv4"
     # rm -f warp64.sh
 }
 
