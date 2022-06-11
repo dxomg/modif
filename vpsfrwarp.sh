@@ -143,8 +143,8 @@ register_wgcf(){
 }
 
 generate_wgcf_config(){
-    yellow "To use the free version of WARP account, please press enter to skip \nTo enable the WARP+ account, copy the license key for WARP+ (26 characters) and enter"
-    read -p "Key License Key (26 characters):" WPPlusKey
+    yellow "Please just Press Enter :)"
+    read -p "Press Enter" WPPlusKey
     if [[ -n $WPPlusKey ]]; then
         sed -i "s/license_key.*/license_key = \"$WPPlusKey\"/g" wgcf-account.toml
         read -p "请输入自定义设备名，如未输入则使用默认随机设备名：" WPPlusName
